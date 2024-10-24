@@ -60,53 +60,21 @@ export const availableWidgets: Widget[] = [
 export const renderWidget = (widget: LayoutItem) => {
   switch (widget.widgetType) {
     case "user-count":
-      return (
-        <div className="h-full">
-          <StatCard title="Total Users" value="1,245" growth="4.5%" />
-        </div>
-      );
+      return <StatCard title="Total Users" value="1,245" growth="4.5%" />;
     case "active-users":
-      return (
-        <div className="h-full">
-          <StatCard title="Active Users" value="754" growth="-2.8%" />
-        </div>
-      );
+      return <StatCard title="Active Users" value="754" growth="-2.8%" />;
     case "new-users":
-      return (
-        <div className="h-full">
-          <StatCard title="New Signups" value="3000" growth="10%" />
-        </div>
-      );
+      return <StatCard title="New Signups" value="3000" growth="10%" />;
     case "total-revenue":
-      return (
-        <div className="h-full">
-          <StatCard title="Total Revenue" value="$12,000" growth="3.4%" />
-        </div>
-      );
+      return <StatCard title="Total Revenue" value="$12,000" growth="3.4%" />;
     case "recent-activities":
-      return (
-        <div className="h-full">
-          <RecentActivities />
-        </div>
-      );
+      return <RecentActivities />;
     case "users-overviews":
-      return (
-        <div className="h-full">
-          <UserOverviewCard />
-        </div>
-      );
+      return <UserOverviewCard />;
     case "monthly-revenue":
-      return (
-        <div className="h-full">
-          <LineChart />
-        </div>
-      );
+      return <LineChart />;
     case "monthly-user-activity":
-      return (
-        <div className="h-full">
-          <BarChart />
-        </div>
-      );
+      return <BarChart />;
     default:
       return <div>Unknown Widget</div>;
   }

@@ -98,7 +98,7 @@ const users = [
 
 export const UserOverviewCard = () => {
   return (
-    <div className="grid grid-cols-1 gap-3 overflow-auto h-full">
+    <div className="grid grid-cols-1 gap-3 overflow-auto h-full p-2">
       {users.map((user, index) => (
         <UserOverview
           key={index}

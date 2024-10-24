@@ -3,6 +3,7 @@ import { Responsive, WidthProvider, Layout } from "react-grid-layout";
 import { GripHorizontal, PinIcon, X } from "lucide-react";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import "../custom-style.css";
 import { availableWidgets, defaultSetting, renderWidget } from "@/utils/helper";
 import { LayoutItem } from "@/utils/types";
 
@@ -30,43 +31,29 @@ export default function MyResponsiveGridLayout() {
     );
   };
 
-  const addWidget = useCallback(
-    (widgetType: string, dropPosition: { x: number; y: number }) => {
-      const newItem: LayoutItem = {
-        i: `${nextId}`,
-        x: Math.floor(dropPosition.x / 100), // Assuming each grid unit is 100px wide
-        y: Math.floor(dropPosition.y / 100), // Assuming each grid unit is 100px tall
-        w: 3,
-        h: 2,
-        widgetType,
-      };
-      setLayout((prevLayout) => [...prevLayout, newItem]);
-      setNextId((prevId) => prevId + 1);
-    },
-    [nextId]
-  );
-
   const handleDragStart = (e: React.DragEvent, widgetType: string) => {
     e.dataTransfer.setData("widgetType", widgetType);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const widgetType = e.dataTransfer.getData("widgetType");
-    const dropPosition = {
-      x: e.clientX - e.currentTarget.getBoundingClientRect().left,
-      y: e.clientY - e.currentTarget.getBoundingClientRect().top,
-    };
-    addWidget(widgetType, dropPosition);
   };
 
   const handleRemove = (i: string) => {
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== i));
   };
+
+  const onDrop = useCallback(
+    (_: Layout[], layoutItem: LayoutItem, event: DragEvent) => {
+      const widgetType = event.dataTransfer?.getData("widgetType");
+      if (widgetType) {
+        const newItem: LayoutItem = {
+          ...layoutItem,
+          i: `${nextId}`,
+          widgetType,
+        };
+        setLayout((prevLayout) => [...prevLayout, newItem]);
+        setNextId((prevId) => prevId + 1);
+      }
+    },
+    [nextId]
+  );
 
   return (
     <div className="flex gap-2 border-4">
@@ -118,11 +105,7 @@ export default function MyResponsiveGridLayout() {
             <label htmlFor="allowOverlap">Allow Overlap</label>
           </div>
         </div>
-        <div
-          className="flex-1 relative overflow-y-auto h-[800px] "
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
+        <div className="flex-1 relative overflow-y-auto h-[800px]">
           {/* <h1 className="text-2xl font-bold mb-4">Draggable Widget Dashboard</h1> */}
 
           <ResponsiveGridLayout
@@ -134,20 +117,19 @@ export default function MyResponsiveGridLayout() {
             onLayoutChange={handleLayoutChange}
             draggableHandle=".drag-handle"
             style={{ minHeight: "100%", overflow: "auto" }}
-            // isDroppable
-            // onDrop={(layout, item) => {
-            //   console.log(layout, item);
-            //   // handleLayoutChange(layout);
-            // }}
+            isDroppable
+            onDrop={onDrop}
+            droppingItem={{ i: "DROP", w: 3, h: 2 }}
             preventCollision={settings.preventCollision}
             allowOverlap={settings.allowOverlap}
+            useCSSTransforms
           >
             {layout.map((item) => (
               <div
                 key={item.i}
-                className="border-2 border-gray-300 rounded-lg overflow-hidden"
+                className=" overflow-hidden rounded-md border-2 border-gray-300"
               >
-                <div className="bg-gray-200 p-2 flex justify-between items-center">
+                <div className="bg-gray-200 p-2 flex justify-between items-center ">
                   <span className="flex items-center gap-2 font-semibold drag-handle cursor-move">
                     <GripHorizontal className="w-4 h-4" />
                     Widget {item.i}
