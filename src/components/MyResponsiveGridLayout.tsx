@@ -1,19 +1,34 @@
 import React, { useState, useCallback } from "react";
 import { Responsive, WidthProvider, Layout } from "react-grid-layout";
 import { GripHorizontal, PinIcon, X } from "lucide-react";
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
-import "../custom-style.css";
 import { availableWidgets, defaultSetting, renderWidget } from "@/utils/helper";
 import { LayoutItem } from "@/utils/types";
 
+// Add default styles
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+// Add custom style
+import "../custom-style.css";
+
+type MyResponsiveGridLayoutProps = {
+  layout: LayoutItem[]; // Prop for the layout array
+  setLayout: React.Dispatch<React.SetStateAction<LayoutItem[]>>; // Prop for the function to update layout
+};
+
+// Enhance the Responsive component with width provider
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-export default function MyResponsiveGridLayout() {
-  const [layout, setLayout] = useState<LayoutItem[]>([]);
+// Main functional component for responsive grid layout
+const MyResponsiveGridLayout: React.FC<MyResponsiveGridLayoutProps> = ({
+  layout,
+  setLayout,
+}) => {
+  // State for grid settings
   const [settings, SetSettings] = useState(defaultSetting);
+  // State for generating unique IDs for new widgets
   const [nextId, setNextId] = useState(1);
 
+  // Toggle the pinned state of a widget
   const togglePinned = (i: string) => {
     setLayout((prevLayout) =>
       prevLayout.map((item) =>
@@ -22,6 +37,7 @@ export default function MyResponsiveGridLayout() {
     );
   };
 
+  // Update layout when items are rearranged
   const handleLayoutChange = (newLayout: Layout[]) => {
     setLayout((prevLayout) =>
       prevLayout.map((item) => {
@@ -31,14 +47,17 @@ export default function MyResponsiveGridLayout() {
     );
   };
 
+  // Update layout when items are rearranged
   const handleDragStart = (e: React.DragEvent, widgetType: string) => {
     e.dataTransfer.setData("widgetType", widgetType);
   };
 
+  // Remove a widget from the layout
   const handleRemove = (i: string) => {
     setLayout((prevLayout) => prevLayout.filter((item) => item.i !== i));
   };
 
+  // Handle dropping a new widget into the layout
   const onDrop = useCallback(
     (_: Layout[], layoutItem: LayoutItem, event: DragEvent) => {
       const widgetType = event.dataTransfer?.getData("widgetType");
@@ -57,6 +76,7 @@ export default function MyResponsiveGridLayout() {
 
   return (
     <div className="flex gap-2 border-4">
+      {/* Available Widgest */}
       <div className="w-72 bg-gray-100 p-4 h-fit sticky">
         <h2 className="text-xl font-bold mb-4">Widgets</h2>
         <ul className="space-y-2">
@@ -75,6 +95,7 @@ export default function MyResponsiveGridLayout() {
       </div>
 
       <div className="w-full">
+        {/* Settings */}
         <div className="flex gap-2 p-2 sticky">
           <div className="flex gap-2 items-center bg-slate-300 px-4 py-2 rounded-full">
             <input
@@ -105,9 +126,8 @@ export default function MyResponsiveGridLayout() {
             <label htmlFor="allowOverlap">Allow Overlap</label>
           </div>
         </div>
+        {/* Dashboard */}
         <div className="flex-1 relative overflow-y-auto h-[800px]">
-          {/* <h1 className="text-2xl font-bold mb-4">Draggable Widget Dashboard</h1> */}
-
           <ResponsiveGridLayout
             className="layout border-2 bg-white"
             layouts={{ lg: layout }}
@@ -162,4 +182,6 @@ export default function MyResponsiveGridLayout() {
       </div>
     </div>
   );
-}
+};
+
+export default MyResponsiveGridLayout;
