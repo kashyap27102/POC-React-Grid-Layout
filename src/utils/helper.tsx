@@ -5,6 +5,7 @@ import {
   Activity,
   ChartColumn,
   DollarSign,
+  Table,
   User,
   User2Icon,
   UserCheck2Icon,
@@ -13,6 +14,7 @@ import {
 import LineChart from "@/components/LineChart";
 import BarChart from "@/components/BarChart";
 import { UserOverviewCard } from "@/components/UserOverview";
+import { ResponsiveDealTable } from "@/components/ResponsiveDealTable";
 
 export const availableWidgets: Widget[] = [
   {
@@ -55,6 +57,11 @@ export const availableWidgets: Widget[] = [
     type: "Monthly User Activity Chart",
     icon: <ChartColumn />,
   },
+  {
+    id: "table",
+    type: "Table",
+    icon: <Table />,
+  },
 ];
 
 export const renderWidget = (widget: LayoutItem) => {
@@ -75,6 +82,9 @@ export const renderWidget = (widget: LayoutItem) => {
       return <LineChart />;
     case "monthly-user-activity":
       return <BarChart />;
+    case "table":
+      return <ResponsiveDealTable />;
+
     default:
       return <div>Unknown Widget</div>;
   }
