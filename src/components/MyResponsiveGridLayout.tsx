@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Responsive, WidthProvider, Layout } from "react-grid-layout";
+import { v4 as uuidv4 } from "uuid";
 import { GripHorizontal, PinIcon, X } from "lucide-react";
 import { availableWidgets, defaultSetting, renderWidget } from "@/utils/helper";
 import { LayoutItem } from "@/utils/types";
@@ -25,8 +26,6 @@ const MyResponsiveGridLayout: React.FC<MyResponsiveGridLayoutProps> = ({
 }) => {
   // State for grid settings
   const [settings, SetSettings] = useState(defaultSetting);
-  // State for generating unique IDs for new widgets
-  const [nextId, setNextId] = useState(1);
 
   // Toggle the pinned state of a widget
   const togglePinned = (i: string) => {
@@ -58,21 +57,19 @@ const MyResponsiveGridLayout: React.FC<MyResponsiveGridLayoutProps> = ({
   };
 
   // Handle dropping a new widget into the layout
-  const onDrop = useCallback(
-    (_: Layout[], layoutItem: LayoutItem, event: DragEvent) => {
-      const widgetType = event.dataTransfer?.getData("widgetType");
-      if (widgetType) {
-        const newItem: LayoutItem = {
-          ...layoutItem,
-          i: `${nextId}`,
-          widgetType,
-        };
-        setLayout((prevLayout) => [...prevLayout, newItem]);
-        setNextId((prevId) => prevId + 1);
-      }
-    },
-    [nextId]
-  );
+  const onDrop = (_: Layout[], layoutItem: LayoutItem, event: DragEvent) => {
+    console.log("Dropped:", layoutItem);
+
+    const widgetType = event.dataTransfer?.getData("widgetType");
+    if (widgetType) {
+      const newItem: LayoutItem = {
+        ...layoutItem,
+        i: `${uuidv4()}`,
+        widgetType,
+      };
+      setLayout((prevLayout) => [...prevLayout, newItem]);
+    }
+  };
 
   return (
     <div className="flex gap-2 border-4">
@@ -152,7 +149,7 @@ const MyResponsiveGridLayout: React.FC<MyResponsiveGridLayoutProps> = ({
                 <div className="bg-gray-200 p-2 flex justify-between items-center ">
                   <span className="flex items-center gap-2 font-semibold drag-handle cursor-move">
                     <GripHorizontal className="w-4 h-4" />
-                    Widget {item.i}
+                    {item.widgetType.toUpperCase()}
                   </span>
                   <div className="space-x-3">
                     <button
